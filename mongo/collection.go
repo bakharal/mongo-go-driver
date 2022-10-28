@@ -529,7 +529,7 @@ func (coll *Collection) DeleteMany(ctx context.Context, filter interface{},
 
 func (coll *Collection) updateOrReplace(ctx context.Context, filter bsoncore.Document, update interface{}, multi bool,
 	expectedRr returnResult, checkDollarKey bool, opts ...*options.UpdateOptions) (*UpdateResult, error) {
-
+	fmt.Printf("############### BEGIN OP updateOrReplace")
 	if ctx == nil {
 		ctx = context.Background()
 	}
@@ -618,6 +618,7 @@ func (coll *Collection) updateOrReplace(ctx context.Context, filter bsoncore.Doc
 		res.MatchedCount--
 	}
 
+	fmt.Printf("############### END OP updateOrReplace")
 	return res, err
 }
 
