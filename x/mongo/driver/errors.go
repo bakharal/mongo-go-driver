@@ -497,7 +497,7 @@ func ExtractErrorFromServerResponse(doc bsoncore.Document) error {
 		if errmsg == "" {
 			errmsg = "command failed"
 		}
-
+		fmt.Printf("So the server error is code: %d, errmsg: %s, codeName: %s, labels: %v", code, errmsg, codeName, labels)
 		return Error{
 			Code:            code,
 			Message:         errmsg,
