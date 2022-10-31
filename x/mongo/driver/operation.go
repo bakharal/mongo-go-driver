@@ -586,7 +586,6 @@ func (op Operation) Execute(ctx context.Context) error {
 		}
 
 		if err == nil {
-			fmt.Printf("############# Err7 %v", err)
 			// roundtrip using either the full roundTripper or a special one for when the moreToCome
 			// flag is set
 			var roundTrip = op.roundTrip
@@ -599,6 +598,8 @@ func (op Operation) Execute(ctx context.Context) error {
 				_ = ep.ProcessError(err, conn)
 			}
 		}
+
+		fmt.Printf("############# Err7 %v", err)
 
 		finishedInfo.response = res
 		finishedInfo.cmdErr = err
@@ -841,6 +842,7 @@ func (op Operation) retryable(desc description.Server) bool {
 // is reused when reading the wiremessage.
 func (op Operation) roundTrip(ctx context.Context, conn Connection, wm []byte) (result, pooledSlice []byte, err error) {
 	err = conn.WriteWireMessage(ctx, wm)
+	fmt.Printf("################ round trip error %v", err)
 	if err != nil {
 		return nil, wm, op.networkError(err)
 	}
