@@ -598,7 +598,7 @@ func (op Operation) Execute(ctx context.Context) error {
 				_ = ep.ProcessError(err, conn)
 			}
 		}
-
+		// We see the error here
 		fmt.Printf("############# Err7 %v", err)
 
 		finishedInfo.response = res
@@ -852,6 +852,7 @@ func (op Operation) roundTrip(ctx context.Context, conn Connection, wm []byte) (
 func (op Operation) readWireMessage(ctx context.Context, conn Connection, wm []byte) (result, pooledSlice []byte, err error) {
 	wm, err = conn.ReadWireMessage(ctx, wm[:0])
 	if err != nil {
+		fmt.Printf("readWireMessage1 %v", err)
 		return nil, wm, op.networkError(err)
 	}
 
@@ -864,6 +865,7 @@ func (op Operation) readWireMessage(ctx context.Context, conn Connection, wm []b
 	// decompress wiremessage
 	wm, err = op.decompressWireMessage(wm)
 	if err != nil {
+		fmt.Printf("readWireMessage2 %v", err)
 		return nil, wm, err
 	}
 
@@ -884,6 +886,7 @@ func (op Operation) readWireMessage(ctx context.Context, conn Connection, wm []b
 	}
 
 	if err != nil {
+		fmt.Printf("readWireMessage3 %v", err)
 		return res, wm, err
 	}
 
@@ -891,6 +894,9 @@ func (op Operation) readWireMessage(ctx context.Context, conn Connection, wm []b
 	if op.Crypt != nil {
 		res, err = op.Crypt.Decrypt(ctx, res)
 	}
+
+	fmt.Printf("readWireMessage4 %v", err)
+
 	return res, wm, err
 }
 
