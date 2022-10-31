@@ -617,7 +617,7 @@ func (coll *Collection) updateOrReplace(ctx context.Context, filter bsoncore.Doc
 		res.UpsertedID = opRes.Upserted[0].ID
 		res.MatchedCount--
 	}
-
+	//TODO: it reached here, so we can go from the bottom to trace the error
 	fmt.Printf("############### END OP updateOrReplace")
 	return res, err
 }

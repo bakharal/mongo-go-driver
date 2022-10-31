@@ -329,6 +329,7 @@ var memoryPool = sync.Pool{
 // Execute runs this operation.
 func (op Operation) Execute(ctx context.Context) error {
 	err := op.Validate()
+	fmt.Printf("#### Validation result %v", err)
 	if err != nil {
 		return err
 	}
@@ -427,6 +428,7 @@ func (op Operation) Execute(ctx context.Context) error {
 		}
 		memoryPool.Put(wm)
 	}()
+	fmt.Printf("###############Begin sending batches")
 	for {
 		// If the server or connection are nil, try to select a new server and get a new connection.
 		if srvr == nil || conn == nil {
@@ -443,6 +445,7 @@ func (op Operation) Execute(ctx context.Context) error {
 				// If this is a retry and there's an error from a previous attempt, return the previous
 				// error instead of the current connection error.
 				if prevErr != nil {
+					fmt.Printf("############# Err1 %v", prevErr)
 					return prevErr
 				}
 				return err
@@ -457,6 +460,7 @@ func (op Operation) Execute(ctx context.Context) error {
 					return fmt.Errorf("unexpected nil session for a terminated implicit session")
 				}
 				if err := op.Client.SetServer(); err != nil {
+					fmt.Printf("############# Err2 %v", err)
 					return err
 				}
 			}
@@ -495,6 +499,7 @@ func (op Operation) Execute(ctx context.Context) error {
 		// Calculate maxTimeMS value to potentially be appended to the wire message.
 		maxTimeMS, err := op.calculateMaxTimeMS(ctx, srvr.RTTMonitor().P90(), srvr.RTTMonitor().Stats())
 		if err != nil {
+			fmt.Printf("############# Err3 %v", err)
 			return err
 		}
 
@@ -520,6 +525,7 @@ func (op Operation) Execute(ctx context.Context) error {
 			err = op.Batches.AdvanceBatch(int(desc.MaxBatchCount), int(targetBatchSize), int(maxDocSize))
 			if err != nil {
 				// TODO(GODRIVER-982): Should we also be returning operationErr?
+				fmt.Printf("############# Err4 %v", err)
 				return err
 			}
 		}
@@ -527,6 +533,7 @@ func (op Operation) Execute(ctx context.Context) error {
 		var startedInfo startedInformation
 		*wm, startedInfo, err = op.createWireMessage(ctx, (*wm)[:0], desc, maxTimeMS, conn)
 		if err != nil {
+			fmt.Printf("############# Err5 %v", err)
 			return err
 		}
 
@@ -549,6 +556,7 @@ func (op Operation) Execute(ctx context.Context) error {
 			memoryPool.Put(wm)
 			wm = b
 			if err != nil {
+				fmt.Printf("############# Err6 %v", err)
 				return err
 			}
 		}
@@ -578,6 +586,7 @@ func (op Operation) Execute(ctx context.Context) error {
 		}
 
 		if err == nil {
+			fmt.Printf("############# Err7 %v", err)
 			// roundtrip using either the full roundTripper or a special one for when the moreToCome
 			// flag is set
 			var roundTrip = op.roundTrip
@@ -798,6 +807,7 @@ func (op Operation) Execute(ctx context.Context) error {
 		break
 	}
 	if len(operationErr.WriteErrors) > 0 || operationErr.WriteConcernError != nil {
+		fmt.Printf("############# Err9 %v", operationErr)
 		return operationErr
 	}
 	return nil
