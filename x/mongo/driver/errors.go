@@ -514,7 +514,8 @@ func ExtractErrorFromServerResponse(doc bsoncore.Document) error {
 			wcError.WriteConcernError.TopologyVersion = tv
 		}
 		wcError.Raw = doc
-		fmt.Printf("So the server error is code: %d, message: %s, error: %s", wcError.WriteErrors[0].Code, wcError.WriteErrors[0].Message, wcError.WriteErrors[0].Error())
+		//TODO: added more(details and index), need to run again
+		fmt.Printf("So the server error is code: %d, message: %s, error: %s, details: %v, index: %d", wcError.WriteErrors[0].Code, wcError.WriteErrors[0].Message, wcError.WriteErrors[0].Error(), wcError.WriteErrors[0].Details, wcError.WriteErrors[0].Index)
 
 		return wcError
 	}

@@ -612,7 +612,6 @@ const (
 //
 // WriteConcernError will be returned over WriteErrors if both are present.
 func processWriteError(err error) (returnResult, error) {
-	fmt.Printf("################## Original error %v", err)
 	switch {
 	case err == driver.ErrUnacknowledgedWrite:
 		return rrAll, ErrUnacknowledgedWrite

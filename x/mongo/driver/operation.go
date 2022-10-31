@@ -329,7 +329,6 @@ var memoryPool = sync.Pool{
 // Execute runs this operation.
 func (op Operation) Execute(ctx context.Context) error {
 	err := op.Validate()
-	fmt.Printf("#### Validation result %v", err)
 	if err != nil {
 		return err
 	}
@@ -428,7 +427,6 @@ func (op Operation) Execute(ctx context.Context) error {
 		}
 		memoryPool.Put(wm)
 	}()
-	fmt.Printf("###############Begin sending batches")
 	for {
 		// If the server or connection are nil, try to select a new server and get a new connection.
 		if srvr == nil || conn == nil {
@@ -598,9 +596,7 @@ func (op Operation) Execute(ctx context.Context) error {
 				_ = ep.ProcessError(err, conn)
 			}
 		}
-		// We see the error here
-		fmt.Printf("############# Err7 %v", err)
-
+		
 		finishedInfo.response = res
 		finishedInfo.cmdErr = err
 		op.publishFinishedEvent(ctx, finishedInfo)
@@ -842,7 +838,6 @@ func (op Operation) retryable(desc description.Server) bool {
 // is reused when reading the wiremessage.
 func (op Operation) roundTrip(ctx context.Context, conn Connection, wm []byte) (result, pooledSlice []byte, err error) {
 	err = conn.WriteWireMessage(ctx, wm)
-	fmt.Printf("################ round trip error %v", err)
 	if err != nil {
 		return nil, wm, op.networkError(err)
 	}
@@ -895,8 +890,6 @@ func (op Operation) readWireMessage(ctx context.Context, conn Connection, wm []b
 	if op.Crypt != nil {
 		res, err = op.Crypt.Decrypt(ctx, res)
 	}
-
-	fmt.Printf("readWireMessage4 %v", err)
 
 	return res, wm, err
 }
