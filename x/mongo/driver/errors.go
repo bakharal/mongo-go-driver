@@ -419,6 +419,7 @@ func ExtractErrorFromServerResponse(doc bsoncore.Document) error {
 
 			}
 		case "writeErrors":
+			fmt.Printf("FOUND THE BITCH")
 			arr, exists := elem.Value().ArrayOK()
 			if !exists {
 				break

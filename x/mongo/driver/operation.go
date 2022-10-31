@@ -886,6 +886,7 @@ func (op Operation) readWireMessage(ctx context.Context, conn Connection, wm []b
 	}
 
 	if err != nil {
+		// TODO: looks like it happens here
 		fmt.Printf("readWireMessage3 %v", err)
 		return res, wm, err
 	}
@@ -926,6 +927,7 @@ func (op Operation) networkError(err error) error {
 func (op *Operation) moreToComeRoundTrip(ctx context.Context, conn Connection, wm []byte) (result, pooledSlice []byte, err error) {
 	err = conn.WriteWireMessage(ctx, wm)
 	if err != nil {
+		fmt.Printf("moreToComeRoundTrip %v", err)
 		if op.Client != nil {
 			op.Client.MarkDirty()
 		}
